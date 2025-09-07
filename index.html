@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshCart Supermarket</title>
+    <!-- Use Tailwind CSS for easy and responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-green-600 flex items-center mb-4 md:mb-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H12m0 0l-1.6 8M7 13l-2.4 8m10.4-8l2.4 8M16 13l2.4 8M6.2 16h8.8m-4.4 0l-2.4 8m4.8-8l-2.4 8" />
+                </svg>
+                FreshCart
+            </a>
+            
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex flex-grow justify-center space-x-6 text-lg font-medium">
+                <a href="#products" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Products</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Weekly Deals</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 transition-colors duration-300">About Us</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Contact</a>
+            </nav>
+
+            <!-- Search and Cart Icons -->
+            <div class="flex items-center space-x-4">
+                <div class="relative w-full md:w-auto">
+                    <input type="text" id="searchInput" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <button class="relative bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H12m0 0l-1.6 8M7 13l-2.4 8m10.4-8l2.4 8M16 13l-2.4-8m-2.4-8h-2.4m2.4 0a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span id="cartCount" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-green-100 text-center py-20 px-4 rounded-b-3xl shadow-lg">
+        <h1 class="text-4xl md:text-6xl font-extrabold text-green-800 mb-4">Freshness Delivered to Your Doorstep</h1>
+        <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">Discover a wide range of fresh produce, quality groceries, and daily essentials, all at your fingertips.</p>
+        <button class="bg-green-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-green-700 transition-colors duration-300 transform hover:scale-105">Shop Now</button>
+    </section>
+
+    <!-- Product Grid Section -->
+    <main id="products" class="container mx-auto px-4 py-12">
+        <h2 class="text-3xl font-bold text-center mb-10 text-green-700">Our Products</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="productGrid">
+            <!-- Product Cards will be injected here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Simple "Add to Cart" Modal/Message Box -->
+    <div id="messageBox" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-600 text-white p-4 rounded-lg shadow-xl hidden transition-all duration-300 ease-in-out opacity-0">
+        <p id="messageText"></p>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-900 text-white py-8 mt-12 rounded-t-3xl shadow-lg">
+        <div class="container mx-auto px-4 text-center md:text-left grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4 text-green-500">FreshCart</h3>
+                <p class="text-gray-400">Quality groceries, delivered with care. Your one-stop shop for all essentials.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-green-500 transition-colors duration-300">Products</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-green-500 transition-colors duration-300">Specials</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-green-500 transition-colors duration-300">Our Story</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+                <p class="text-gray-400">123 Main Street, Anytown, USA</p>
+                <p class="text-gray-400">info@freshcart.com</p>
+                <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07c3.252.148 4.613 1.626 4.76 4.854.054 1.268.067 1.649.067 4.853 0 3.205-.013 3.585-.067 4.854-.147 3.228-1.508 4.608-4.76 4.756-1.267.058-1.648.07-4.85.07-3.204 0-3.584-.012-4.85-.07-3.252-.148-4.613-1.626-4.76-4.854-.054-1.268-.067-1.649-.067-4.853 0-3.205.013-3.585.067-4.854.147-3.228 1.508-4.608 4.76-4.756 1.267-.058 1.648-.07 4.85-.07zm0-2.163c-3.259 0-3.66.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.058 1.288-.072 1.689-.072 4.948 0 3.259.014 3.66.072 4.947.2 4.358 2.618 6.78 6.98 6.98 1.288.058 1.689.072 4.948.072 3.259 0 3.66-.014 4.947-.072 4.358-.2 6.78-2.618 6.98-6.98.058-1.288.072-1.689.072-4.948 0-3.259-.014-3.66-.072-4.947-.2-4.358-2.618-6.78-6.98-6.98-1.288-.058-1.689-.072-4.948-.072zM12 6.865c-2.822 0-5.135 2.313-5.135 5.135s2.313 5.135 5.135 5.135 5.135-2.313 5.135-5.135-2.313-5.135-5.135-5.135zm0 8.865c-2.04 0-3.7-1.66-3.7-3.7s1.66-3.7 3.7-3.7 3.7 1.66 3.7 3.7-1.66 3.7-3.7 3.7z"/></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.25 4.364c-.793.353-1.644.59-2.525.694.912-.547 1.614-1.412 1.944-2.443-.858.508-1.809.878-2.816 1.078-2.028-2.16-5.46-2.68-7.79-.172-2.14 2.39-1.92 6.04-.158 8.44-4.66-.25-8.794-2.47-11.554-5.83-.563.97-1.07 2.064-1.07 3.256 0 2.254 1.144 4.258 2.872 5.417-1.12-.036-2.17-.34-3.09-1.07v.08c0 3.31 2.36 6.068 5.48 6.71-.58.158-1.2.23-1.84.23-.454 0-.89-.044-1.32-.127.872 2.71 3.39 4.68 6.38 4.74-2.348 1.84-5.286 2.92-8.49 2.92-.55 0-1.09-.033-1.63-.09 3.03 1.94 6.63 3.076 10.5 3.076 12.59 0 19.45-10.43 19.45-19.45 0-.498-.01-1-.03-1.49.82-.59 1.54-1.32 2.1-2.15z"/></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M9.455 1.493c-2.473 0-3.358.007-4.544.06-2.385.1-3.64 1.258-3.737 3.643-.053 1.186-.06 2.07-.06 4.544v3.834c0 2.473.007 3.358.06 4.544.097 2.385 1.352 3.543 3.737 3.643 1.186.053 2.07.06 4.544.06h3.834c2.473 0 3.358-.007 4.544-.06 2.385-.097 3.64-1.258 3.737-3.643.053-1.186.06-2.07.06-4.544v-3.834c0-2.473-.007-3.358-.06-4.544-.097-2.385-1.352-3.543-3.737-3.643-1.186-.053-2.07-.06-4.544-.06h-3.834zm1.905 13.921c-2.583 0-4.685-2.1-4.685-4.685s2.102-4.685 4.685-4.685 4.685 2.1 4.685 4.685-2.102 4.685-4.685 4.685zm.14-7.461c-1.528 0-2.776 1.248-2.776 2.776s1.248 2.776 2.776 2.776 2.776-1.248 2.776-2.776-1.248-2.776-2.776-2.776zm4.991-3.328c-.563 0-1.018.455-1.018 1.018s.455 1.018 1.018 1.018 1.018-.455 1.018-1.018-.455-1.018-1.018-1.018z"/></svg></a>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-gray-500 text-sm mt-8">&copy; 2024 FreshCart. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for dynamic product loading and cart functionality -->
+    <script>
+        // Array of products to display
+        const products = [
+            { name: "Fresh Apples", price: 2.99, image: "https://placehold.co/400x300/e5f7ed/1b5e20?text=Apples", category: "fruits" },
+            { name: "Organic Bananas", price: 1.50, image: "https://placehold.co/400x300/fff3e0/e65100?text=Bananas", category: "fruits" },
+            { name: "Avocado", price: 1.85, image: "https://placehold.co/400x300/e8f5e9/2e7d32?text=Avocado", category: "vegetables" },
+            { name: "Broccoli", price: 3.20, image: "https://placehold.co/400x300/e1f5fe/01579b?text=Broccoli", category: "vegetables" },
+            { name: "Milk (1L)", price: 4.50, image: "https://placehold.co/400x300/fafafa/000000?text=Milk", category: "dairy" },
+            { name: "Whole Wheat Bread", price: 3.75, image: "https://placehold.co/400x300/fbe9e7/bf360c?text=Bread", category: "bakery" },
+            { name: "Cheddar Cheese", price: 5.99, image: "https://placehold.co/400x300/fff8e1/ff6f00?text=Cheese", category: "dairy" },
+            { name: "Tomato", price: 0.75, image: "https://placehold.co/400x300/ffebee/d32f2f?text=Tomato", category: "vegetables" },
+            { name: "Chicken Breast", price: 8.99, image: "https://placehold.co/400x300/fafafa/000000?text=Chicken", category: "meat" },
+            { name: "Salmon Fillet", price: 12.50, image: "https://placehold.co/400x300/e3f2fd/1565c0?text=Salmon", category: "seafood" },
+            { name: "Organic Eggs", price: 3.99, image: "https://placehold.co/400x300/fffde7/ffb300?text=Eggs", category: "dairy" },
+            { name: "Pasta", price: 2.10, image: "https://placehold.co/400x300/f3e5f5/6a1b9a?text=Pasta", category: "pantry" },
+        ];
+
+        let cartCount = 0;
+        const productGrid = document.getElementById('productGrid');
+        const cartCountElement = document.getElementById('cartCount');
+        const searchInput = document.getElementById('searchInput');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+
+        // Function to render products
+        function renderProducts(filteredProducts) {
+            productGrid.innerHTML = ''; // Clear the grid
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl';
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover object-center">
+                    <div class="p-5">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">${product.name}</h3>
+                        <p class="text-green-600 font-bold text-lg mb-4">$${product.price.toFixed(2)}</p>
+                        <button onclick="addToCart('${product.name}')" class="w-full bg-green-500 text-white py-2 px-4 rounded-full font-semibold hover:bg-green-600 transition-colors duration-300">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+                productGrid.appendChild(productCard);
+            });
+        }
+
+        // Function to show a message (replaces alert())
+        function showMessage(text) {
+            messageText.textContent = text;
+            messageBox.classList.remove('hidden');
+            messageBox.classList.add('opacity-100');
+            setTimeout(() => {
+                messageBox.classList.remove('opacity-100');
+                messageBox.classList.add('opacity-0');
+                setTimeout(() => {
+                    messageBox.classList.add('hidden');
+                }, 300);
+            }, 2000);
+        }
+
+        // Add to cart function
+        function addToCart(productName) {
+            cartCount++;
+            cartCountElement.textContent = cartCount;
+            showMessage(`Added ${productName} to your cart!`);
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredProducts = products.filter(product =>
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+            renderProducts(filteredProducts);
+        });
+
+        // Initial rendering of all products
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts(products);
+        });
+
+    </script>
+
+</body>
+</html>
