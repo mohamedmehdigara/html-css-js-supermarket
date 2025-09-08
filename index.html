@@ -55,26 +55,26 @@
         }
 
         /* Custom scrollbar for better aesthetics */
-        .cart-items::-webkit-scrollbar, .list-items::-webkit-scrollbar, .recently-viewed::-webkit-scrollbar {
+        .cart-items::-webkit-scrollbar, .list-items::-webkit-scrollbar, .recently-viewed::-webkit-scrollbar, .compare-table-container::-webkit-scrollbar {
             width: 8px;
         }
 
-        .cart-items::-webkit-scrollbar-track, .list-items::-webkit-scrollbar-track, .recently-viewed::-webkit-scrollbar-track {
+        .cart-items::-webkit-scrollbar-track, .list-items::-webkit-scrollbar-track, .recently-viewed::-webkit-scrollbar-track, .compare-table-container::-webkit-scrollbar-track {
             background: #e5e7eb;
             border-radius: 10px;
         }
 
-        .dark .cart-items::-webkit-scrollbar-track, .dark .list-items::-webkit-scrollbar-track, .dark .recently-viewed::-webkit-scrollbar-track {
+        .dark .cart-items::-webkit-scrollbar-track, .dark .list-items::-webkit-scrollbar-track, .dark .recently-viewed::-webkit-scrollbar-track, .dark .compare-table-container::-webkit-scrollbar-track {
              background: #4a5568;
         }
 
-        .cart-items::-webkit-scrollbar-thumb, .list-items::-webkit-scrollbar-thumb, .recently-viewed::-webkit-scrollbar-thumb {
+        .cart-items::-webkit-scrollbar-thumb, .list-items::-webkit-scrollbar-thumb, .recently-viewed::-webkit-scrollbar-thumb, .compare-table-container::-webkit-scrollbar-thumb {
             background-color: #9ca3af;
             border-radius: 10px;
             border: 2px solid #e5e7eb;
         }
 
-        .dark .cart-items::-webkit-scrollbar-thumb, .dark .list-items::-webkit-scrollbar-thumb, .dark .recently-viewed::-webkit-scrollbar-thumb {
+        .dark .cart-items::-webkit-scrollbar-thumb, .dark .list-items::-webkit-scrollbar-thumb, .dark .recently-viewed::-webkit-scrollbar-thumb, .dark .compare-table-container::-webkit-scrollbar-thumb {
             background-color: #718096;
             border: 2px solid #4a5568;
         }
@@ -114,6 +114,20 @@
             height: 1rem;
             margin-right: 2px;
         }
+        
+        .compare-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .compare-table th, .compare-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            vertical-align: top;
+        }
+        .dark .compare-table th, .dark .compare-table td {
+            border-bottom-color: #4a5568;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -148,6 +162,12 @@
                 <button id="shoppingListButton" class="relative bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 transition-colors duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M15 13h.01M12 13h.01" />
+                    </svg>
+                </button>
+                <!-- Compare Button -->
+                <button id="compareButton" class="relative bg-purple-500 text-white p-3 rounded-full hover:bg-purple-600 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                 </button>
                 <!-- Dark Mode Toggle Button -->
@@ -278,6 +298,23 @@
             <!-- Content will be injected here -->
         </div>
     </div>
+    
+    <!-- Product Comparison Modal -->
+    <div id="compareModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-[120] hidden flex items-center justify-center modal-enter">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl w-full max-w-4xl mx-4 transition-all duration-300">
+            <div class="flex justify-between items-center border-b pb-3 mb-4 border-gray-200 dark:border-gray-700">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Product Comparison</h3>
+                <button id="closeCompareModal" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="compareContent" class="compare-table-container overflow-x-auto max-h-[80vh]">
+                <!-- Comparison table will be rendered here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Footer Section -->
     <footer id="about-us" class="bg-gray-900 text-white py-8 mt-12 rounded-t-3xl shadow-lg dark:bg-gray-900">
@@ -329,6 +366,7 @@
         let cart = [];
         let shoppingList = JSON.parse(localStorage.getItem('shoppingList')) || [];
         let recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+        let comparisonList = [];
 
         const productGrid = document.getElementById('productGrid');
         const cartCountElement = document.getElementById('cartCount');
@@ -356,6 +394,10 @@
         const minPriceInput = document.getElementById('minPrice');
         const maxPriceInput = document.getElementById('maxPrice');
         const filterButton = document.getElementById('filterButton');
+        const compareButton = document.getElementById('compareButton');
+        const compareModal = document.getElementById('compareModal');
+        const closeCompareModal = document.getElementById('closeCompareModal');
+        const compareContent = document.getElementById('compareContent');
 
         // Function to generate star rating SVG
         function getStars(rating) {
@@ -416,22 +458,28 @@
 
             productGrid.innerHTML = ''; // Clear the grid
             filteredProducts.forEach(product => {
+                const isCompared = comparisonList.includes(product.id);
                 const productCard = document.createElement('div');
-                productCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl dark:bg-gray-700 cursor-pointer';
-                productCard.onclick = () => showQuickView(product.id);
+                productCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl dark:bg-gray-700 relative';
                 
                 const starsHtml = getStars(product.rating);
                 
                 productCard.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover object-center">
-                    <div class="p-5">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-1 dark:text-gray-200">${product.name}</h3>
-                        ${starsHtml}
-                        <p class="text-green-600 font-bold text-lg my-2">$${product.price.toFixed(2)}</p>
-                        <button onclick="event.stopPropagation(); addToCart(${product.id})" class="w-full bg-green-500 text-white py-2 px-4 rounded-full font-semibold hover:bg-green-600 transition-colors duration-300">
-                            Add to Cart
-                        </button>
+                    <div class="absolute top-3 right-3 z-10 flex items-center bg-white dark:bg-gray-800 p-2 rounded-full shadow-md">
+                        <label for="compare-${product.id}" class="text-sm font-semibold text-gray-700 dark:text-gray-300 mr-2">Compare</label>
+                        <input type="checkbox" id="compare-${product.id}" onchange="toggleCompare(${product.id})" ${isCompared ? 'checked' : ''} class="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500">
                     </div>
+                    <div onclick="showQuickView(${product.id})" class="cursor-pointer">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover object-center">
+                        <div class="p-5">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-1 dark:text-gray-200">${product.name}</h3>
+                            ${starsHtml}
+                            <p class="text-green-600 font-bold text-lg my-2">$${product.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <button onclick="event.stopPropagation(); addToCart(${product.id})" class="w-full bg-green-500 text-white py-2 px-4 rounded-b-lg font-semibold hover:bg-green-600 transition-colors duration-300">
+                        Add to Cart
+                    </button>
                 `;
                 productGrid.appendChild(productCard);
             });
@@ -656,6 +704,110 @@
             }, 300);
         }
 
+        // Toggle a product in the comparison list
+        function toggleCompare(productId) {
+            const index = comparisonList.indexOf(productId);
+            if (index > -1) {
+                comparisonList.splice(index, 1);
+            } else {
+                comparisonList.push(productId);
+            }
+            updateCompareButtonState();
+            renderProducts(); // Rerender to update the checkbox state
+        }
+
+        // Update the state of the compare button
+        function updateCompareButtonState() {
+            compareButton.disabled = comparisonList.length < 2;
+        }
+
+        // Render the comparison modal
+        function renderComparisonModal() {
+            const productsToCompare = products.filter(p => comparisonList.includes(p.id));
+            if (productsToCompare.length < 2) {
+                showMessage("Please select at least two products to compare.");
+                return;
+            }
+
+            let tableHtml = `
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th class="w-32 md:w-40 text-left font-bold text-gray-800 dark:text-gray-200">Feature</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Images Row -->
+                        <tr>
+                            <td class="font-bold text-gray-800 dark:text-gray-200">Image</td>
+                        </tr>
+                        <!-- Names Row -->
+                        <tr>
+                            <td class="font-bold text-gray-800 dark:text-gray-200">Name</td>
+                        </tr>
+                        <!-- Prices Row -->
+                        <tr>
+                            <td class="font-bold text-gray-800 dark:text-gray-200">Price</td>
+                        </tr>
+                        <!-- Ratings Row -->
+                        <tr>
+                            <td class="font-bold text-gray-800 dark:text-gray-200">Rating</td>
+                        </tr>
+                        <!-- Descriptions Row -->
+                        <tr>
+                            <td class="font-bold text-gray-800 dark:text-gray-200">Description</td>
+                        </tr>
+                        <!-- Categories Row -->
+                        <tr>
+                            <td class="font-bold text-gray-800 dark:text-gray-200">Category</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            // Insert product data into the table
+            productsToCompare.forEach(product => {
+                const starsHtml = getStars(product.rating);
+                tableHtml = tableHtml.replace('</thead>', `
+                    <th class="text-center font-bold text-gray-800 dark:text-gray-200">${product.name}</th>
+                    </thead>
+                `).replace('<!-- Images Row -->', `
+                    <td class="text-center"><img src="${product.image}" alt="${product.name}" class="w-full h-auto rounded-lg mx-auto"></td>
+                    <!-- Images Row -->
+                `).replace('<!-- Names Row -->', `
+                    <td class="text-center font-semibold text-gray-900 dark:text-gray-200">${product.name}</td>
+                    <!-- Names Row -->
+                `).replace('<!-- Prices Row -->', `
+                    <td class="text-center font-bold text-green-600">$${product.price.toFixed(2)}</td>
+                    <!-- Prices Row -->
+                `).replace('<!-- Ratings Row -->', `
+                    <td class="text-center">
+                        <div class="flex justify-center">${starsHtml}</div>
+                    </td>
+                    <!-- Ratings Row -->
+                `).replace('<!-- Descriptions Row -->', `
+                    <td class="text-left text-gray-600 dark:text-gray-400">${product.description}</td>
+                    <!-- Descriptions Row -->
+                `).replace('<!-- Categories Row -->', `
+                    <td class="text-center text-gray-600 dark:text-gray-400">${product.category}</td>
+                    <!-- Categories Row -->
+                `);
+            });
+
+            compareContent.innerHTML = tableHtml;
+            compareModal.classList.remove('hidden', 'modal-exit-active');
+            compareModal.classList.add('modal-enter-active');
+        }
+
+        // Hide the comparison modal
+        function hideComparisonModal() {
+            compareModal.classList.remove('modal-enter-active');
+            compareModal.classList.add('modal-exit-active');
+            setTimeout(() => {
+                compareModal.classList.add('hidden');
+            }, 300);
+        }
+
         // Open and close cart modal
         cartButton.addEventListener('click', () => {
             cartModal.classList.remove('hidden', 'modal-exit-active');
@@ -686,6 +838,11 @@
                 addListItem();
             }
         });
+
+        // Open and close comparison modal
+        compareButton.addEventListener('click', renderComparisonModal);
+        closeCompareModal.addEventListener('click', hideComparisonModal);
+
 
         // Event listeners for filters and search
         searchInput.addEventListener('input', renderProducts);
