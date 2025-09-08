@@ -12,6 +12,45 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
         }
+
+        /* Custom scrollbar for better aesthetics */
+        .cart-items::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .cart-items::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .cart-items::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+        }
+
+        /* Modal animation classes */
+        .modal-enter {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .modal-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .modal-exit {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-exit-active {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -21,7 +60,7 @@
         <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
             <a href="#" class="text-2xl font-bold text-green-600 flex items-center mb-4 md:mb-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H12m0 0l-1.6 8M7 13l-2.4 8m10.4-8l2.4 8M16 13l2.4 8M6.2 16h8.8m-4.4 0l-2.4 8m4.8-8l-2.4 8" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H12m0 0l-1.6 8M7 13l-2.4 8m10.4-8l2.4 8M16 13l-2.4 8M6.2 16h8.8m-4.4 0l-2.4 8m4.8-8l-2.4 8" />
                 </svg>
                 FreshCart
             </a>
@@ -30,8 +69,8 @@
             <nav class="hidden md:flex flex-grow justify-center space-x-6 text-lg font-medium">
                 <a href="#products" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Products</a>
                 <a href="#" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Weekly Deals</a>
-                <a href="#" class="text-gray-600 hover:text-green-600 transition-colors duration-300">About Us</a>
-                <a href="#" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Contact</a>
+                <a href="#about-us" class="text-gray-600 hover:text-green-600 transition-colors duration-300">About Us</a>
+                <a href="#contact" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Contact</a>
             </nav>
 
             <!-- Search and Cart Icons -->
@@ -42,7 +81,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <button class="relative bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
+                <button id="cartButton" class="relative bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition-colors duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H12m0 0l-1.6 8M7 13l-2.4 8m10.4-8l2.4 8M16 13l-2.4-8m-2.4-8h-2.4m2.4 0a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -68,12 +107,38 @@
     </main>
 
     <!-- Simple "Add to Cart" Modal/Message Box -->
-    <div id="messageBox" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-600 text-white p-4 rounded-lg shadow-xl hidden transition-all duration-300 ease-in-out opacity-0">
+    <div id="messageBox" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-600 text-white p-4 rounded-lg shadow-xl hidden transition-all duration-300 ease-in-out opacity-0 z-50">
         <p id="messageText"></p>
     </div>
 
+    <!-- Shopping Cart Modal -->
+    <div id="cartModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-[100] hidden flex items-center justify-center modal-enter">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md mx-4 transition-all duration-300">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-2xl font-bold text-gray-800">Your Cart</h3>
+                <button id="closeCartModal" class="text-gray-500 hover:text-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="cartItems" class="space-y-4 max-h-80 overflow-y-auto pr-2 cart-items">
+                <!-- Cart items will be rendered here -->
+            </div>
+
+            <div class="border-t pt-4 mt-4 flex justify-between items-center">
+                <span class="text-xl font-bold">Total:</span>
+                <span id="cartTotal" class="text-xl font-bold text-green-600">$0.00</span>
+            </div>
+            <button class="w-full bg-green-600 text-white font-semibold py-3 mt-4 rounded-full hover:bg-green-700 transition-colors duration-300">
+                Checkout
+            </button>
+        </div>
+    </div>
+
     <!-- Footer Section -->
-    <footer class="bg-gray-900 text-white py-8 mt-12 rounded-t-3xl shadow-lg">
+    <footer id="about-us" class="bg-gray-900 text-white py-8 mt-12 rounded-t-3xl shadow-lg">
         <div class="container mx-auto px-4 text-center md:text-left grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
                 <h3 class="text-xl font-bold mb-4 text-green-500">FreshCart</h3>
@@ -87,7 +152,7 @@
                     <li><a href="#" class="text-gray-400 hover:text-green-500 transition-colors duration-300">Our Story</a></li>
                 </ul>
             </div>
-            <div>
+            <div id="contact">
                 <h3 class="text-xl font-bold mb-4">Contact Us</h3>
                 <p class="text-gray-400">123 Main Street, Anytown, USA</p>
                 <p class="text-gray-400">info@freshcart.com</p>
@@ -105,26 +170,31 @@
     <script>
         // Array of products to display
         const products = [
-            { name: "Fresh Apples", price: 2.99, image: "https://placehold.co/400x300/e5f7ed/1b5e20?text=Apples", category: "fruits" },
-            { name: "Organic Bananas", price: 1.50, image: "https://placehold.co/400x300/fff3e0/e65100?text=Bananas", category: "fruits" },
-            { name: "Avocado", price: 1.85, image: "https://placehold.co/400x300/e8f5e9/2e7d32?text=Avocado", category: "vegetables" },
-            { name: "Broccoli", price: 3.20, image: "https://placehold.co/400x300/e1f5fe/01579b?text=Broccoli", category: "vegetables" },
-            { name: "Milk (1L)", price: 4.50, image: "https://placehold.co/400x300/fafafa/000000?text=Milk", category: "dairy" },
-            { name: "Whole Wheat Bread", price: 3.75, image: "https://placehold.co/400x300/fbe9e7/bf360c?text=Bread", category: "bakery" },
-            { name: "Cheddar Cheese", price: 5.99, image: "https://placehold.co/400x300/fff8e1/ff6f00?text=Cheese", category: "dairy" },
-            { name: "Tomato", price: 0.75, image: "https://placehold.co/400x300/ffebee/d32f2f?text=Tomato", category: "vegetables" },
-            { name: "Chicken Breast", price: 8.99, image: "https://placehold.co/400x300/fafafa/000000?text=Chicken", category: "meat" },
-            { name: "Salmon Fillet", price: 12.50, image: "https://placehold.co/400x300/e3f2fd/1565c0?text=Salmon", category: "seafood" },
-            { name: "Organic Eggs", price: 3.99, image: "https://placehold.co/400x300/fffde7/ffb300?text=Eggs", category: "dairy" },
-            { name: "Pasta", price: 2.10, image: "https://placehold.co/400x300/f3e5f5/6a1b9a?text=Pasta", category: "pantry" },
+            { id: 1, name: "Fresh Apples", price: 2.99, image: "https://placehold.co/400x300/e5f7ed/1b5e20?text=Apples", category: "fruits" },
+            { id: 2, name: "Organic Bananas", price: 1.50, image: "https://placehold.co/400x300/fff3e0/e65100?text=Bananas", category: "fruits" },
+            { id: 3, name: "Avocado", price: 1.85, image: "https://placehold.co/400x300/e8f5e9/2e7d32?text=Avocado", category: "vegetables" },
+            { id: 4, name: "Broccoli", price: 3.20, image: "https://placehold.co/400x300/e1f5fe/01579b?text=Broccoli", category: "vegetables" },
+            { id: 5, name: "Milk (1L)", price: 4.50, image: "https://placehold.co/400x300/fafafa/000000?text=Milk", category: "dairy" },
+            { id: 6, name: "Whole Wheat Bread", price: 3.75, image: "https://placehold.co/400x300/fbe9e7/bf360c?text=Bread", category: "bakery" },
+            { id: 7, name: "Cheddar Cheese", price: 5.99, image: "https://placehold.co/400x300/fff8e1/ff6f00?text=Cheese", category: "dairy" },
+            { id: 8, name: "Tomato", price: 0.75, image: "https://placehold.co/400x300/ffebee/d32f2f?text=Tomato", category: "vegetables" },
+            { id: 9, name: "Chicken Breast", price: 8.99, image: "https://placehold.co/400x300/fafafa/000000?text=Chicken", category: "meat" },
+            { id: 10, name: "Salmon Fillet", price: 12.50, image: "https://placehold.co/400x300/e3f2fd/1565c0?text=Salmon", category: "seafood" },
+            { id: 11, name: "Organic Eggs", price: 3.99, image: "https://placehold.co/400x300/fffde7/ffb300?text=Eggs", category: "dairy" },
+            { id: 12, name: "Pasta", price: 2.10, image: "https://placehold.co/400x300/f3e5f5/6a1b9a?text=Pasta", category: "pantry" },
         ];
 
-        let cartCount = 0;
+        let cart = [];
         const productGrid = document.getElementById('productGrid');
         const cartCountElement = document.getElementById('cartCount');
         const searchInput = document.getElementById('searchInput');
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
+        const cartButton = document.getElementById('cartButton');
+        const cartModal = document.getElementById('cartModal');
+        const closeCartModal = document.getElementById('closeCartModal');
+        const cartItemsContainer = document.getElementById('cartItems');
+        const cartTotalElement = document.getElementById('cartTotal');
 
         // Function to render products
         function renderProducts(filteredProducts) {
@@ -137,7 +207,7 @@
                     <div class="p-5">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">${product.name}</h3>
                         <p class="text-green-600 font-bold text-lg mb-4">$${product.price.toFixed(2)}</p>
-                        <button onclick="addToCart('${product.name}')" class="w-full bg-green-500 text-white py-2 px-4 rounded-full font-semibold hover:bg-green-600 transition-colors duration-300">
+                        <button onclick="addToCart(${product.id})" class="w-full bg-green-500 text-white py-2 px-4 rounded-full font-semibold hover:bg-green-600 transition-colors duration-300">
                             Add to Cart
                         </button>
                     </div>
@@ -149,7 +219,7 @@
         // Function to show a message (replaces alert())
         function showMessage(text) {
             messageText.textContent = text;
-            messageBox.classList.remove('hidden');
+            messageBox.classList.remove('hidden', 'opacity-0');
             messageBox.classList.add('opacity-100');
             setTimeout(() => {
                 messageBox.classList.remove('opacity-100');
@@ -161,11 +231,66 @@
         }
 
         // Add to cart function
-        function addToCart(productName) {
-            cartCount++;
-            cartCountElement.textContent = cartCount;
-            showMessage(`Added ${productName} to your cart!`);
+        function addToCart(productId) {
+            const productToAdd = products.find(p => p.id === productId);
+            if (productToAdd) {
+                const existingItem = cart.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({ ...productToAdd, quantity: 1 });
+                }
+                updateCartUI();
+                showMessage(`Added ${productToAdd.name} to your cart!`);
+            }
         }
+
+        // Update cart UI (count, total, items)
+        function updateCartUI() {
+            let totalCount = 0;
+            let total = 0;
+            cartItemsContainer.innerHTML = ''; // Clear old items
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `<p class="text-center text-gray-500">Your cart is empty.</p>`;
+            } else {
+                cart.forEach(item => {
+                    totalCount += item.quantity;
+                    total += item.price * item.quantity;
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'flex items-center justify-between p-3 bg-gray-100 rounded-lg';
+                    cartItemEl.innerHTML = `
+                        <div class="flex items-center space-x-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-md object-cover">
+                            <div>
+                                <h4 class="font-semibold">${item.name}</h4>
+                                <p class="text-sm text-gray-600">$${item.price.toFixed(2)} x ${item.quantity}</p>
+                            </div>
+                        </div>
+                        <span class="font-bold text-green-600">$${(item.price * item.quantity).toFixed(2)}</span>
+                    `;
+                    cartItemsContainer.appendChild(cartItemEl);
+                });
+            }
+
+            cartCountElement.textContent = totalCount;
+            cartTotalElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Open and close cart modal
+        cartButton.addEventListener('click', () => {
+            cartModal.classList.remove('hidden');
+            cartModal.classList.add('modal-enter-active');
+        });
+
+        closeCartModal.addEventListener('click', () => {
+            cartModal.classList.remove('modal-enter-active');
+            cartModal.classList.add('modal-exit-active');
+            setTimeout(() => {
+                cartModal.classList.add('hidden');
+                cartModal.classList.remove('modal-exit-active');
+            }, 300);
+        });
 
         // Search functionality
         searchInput.addEventListener('input', (e) => {
@@ -180,6 +305,7 @@
         // Initial rendering of all products
         document.addEventListener('DOMContentLoaded', () => {
             renderProducts(products);
+            updateCartUI();
         });
 
     </script>
