@@ -55,26 +55,26 @@
         }
 
         /* Custom scrollbar for better aesthetics */
-        .cart-items::-webkit-scrollbar, .list-items::-webkit-scrollbar, .recently-viewed::-webkit-scrollbar, .compare-table-container::-webkit-scrollbar {
+        .cart-items::-webkit-scrollbar, .list-items::-webkit-scrollbar, .recently-viewed::-webkit-scrollbar, .compare-table-container::-webkit-scrollbar, .recipes::-webkit-scrollbar {
             width: 8px;
         }
 
-        .cart-items::-webkit-scrollbar-track, .list-items::-webkit-scrollbar-track, .recently-viewed::-webkit-scrollbar-track, .compare-table-container::-webkit-scrollbar-track {
+        .cart-items::-webkit-scrollbar-track, .list-items::-webkit-scrollbar-track, .recently-viewed::-webkit-scrollbar-track, .compare-table-container::-webkit-scrollbar-track, .recipes::-webkit-scrollbar-track {
             background: #e5e7eb;
             border-radius: 10px;
         }
 
-        .dark .cart-items::-webkit-scrollbar-track, .dark .list-items::-webkit-scrollbar-track, .dark .recently-viewed::-webkit-scrollbar-track, .dark .compare-table-container::-webkit-scrollbar-track {
+        .dark .cart-items::-webkit-scrollbar-track, .dark .list-items::-webkit-scrollbar-track, .dark .recently-viewed::-webkit-scrollbar-track, .dark .compare-table-container::-webkit-scrollbar-track, .dark .recipes::-webkit-scrollbar-track {
              background: #4a5568;
         }
 
-        .cart-items::-webkit-scrollbar-thumb, .list-items::-webkit-scrollbar-thumb, .recently-viewed::-webkit-scrollbar-thumb, .compare-table-container::-webkit-scrollbar-thumb {
+        .cart-items::-webkit-scrollbar-thumb, .list-items::-webkit-scrollbar-thumb, .recently-viewed::-webkit-scrollbar-thumb, .compare-table-container::-webkit-scrollbar-thumb, .recipes::-webkit-scrollbar-thumb {
             background-color: #9ca3af;
             border-radius: 10px;
             border: 2px solid #e5e7eb;
         }
 
-        .dark .cart-items::-webkit-scrollbar-thumb, .dark .list-items::-webkit-scrollbar-thumb, .dark .recently-viewed::-webkit-scrollbar-thumb, .dark .compare-table-container::-webkit-scrollbar-thumb {
+        .dark .cart-items::-webkit-scrollbar-thumb, .dark .list-items::-webkit-scrollbar-thumb, .dark .recently-viewed::-webkit-scrollbar-thumb, .dark .compare-table-container::-webkit-scrollbar-thumb, .dark .recipes::-webkit-scrollbar-thumb {
             background-color: #718096;
             border: 2px solid #4a5568;
         }
@@ -168,6 +168,12 @@
                 <button id="compareButton" class="relative bg-purple-500 text-white p-3 rounded-full hover:bg-purple-600 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                </button>
+                <!-- Recipe Ideas Button -->
+                <button id="recipeButton" class="relative bg-yellow-500 text-white p-3 rounded-full hover:bg-yellow-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-6 6l6 6m-3-12h.01M3 6h18M3 18h18M6 3v18M18 3v18"/>
                     </svg>
                 </button>
                 <!-- Dark Mode Toggle Button -->
@@ -316,6 +322,23 @@
         </div>
     </div>
 
+    <!-- Recipe Modal -->
+    <div id="recipeModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-[130] hidden flex items-center justify-center modal-enter">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl w-full max-w-md mx-4 transition-all duration-300">
+            <div class="flex justify-between items-center border-b pb-3 mb-4 border-gray-200 dark:border-gray-700">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Recipe Ideas</h3>
+                <button id="closeRecipeModal" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="recipeContent" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2 recipes">
+                <!-- Recipes will be rendered here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Footer Section -->
     <footer id="about-us" class="bg-gray-900 text-white py-8 mt-12 rounded-t-3xl shadow-lg dark:bg-gray-900">
         <div class="container mx-auto px-4 text-center md:text-left grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -363,6 +386,37 @@
             { id: 12, name: "Pasta", price: 2.10, image: "https://placehold.co/400x300/f3e5f5/6a1b9a?text=Pasta", category: "pantry", description: "Classic spaghetti pasta, a staple for any meal.", rating: 4.1 },
         ];
 
+        // Hard-coded recipes with ingredients as product names
+        const recipes = [
+            {
+                name: "Simple Pasta with Tomato Sauce",
+                description: "A quick and delicious classic that’s perfect for a weeknight meal.",
+                requiredIngredients: ["Pasta", "Tomato"],
+                optionalIngredients: ["Cheddar Cheese"]
+            },
+            {
+                name: "Chicken and Broccoli Stir-fry",
+                description: "A healthy and hearty stir-fry that comes together in minutes.",
+                requiredIngredients: ["Chicken Breast", "Broccoli"],
+                optionalIngredients: ["Avocado"]
+            },
+            {
+                name: "Tomato and Avocado Toast",
+                description: "A fresh and simple toast recipe, perfect for a light breakfast or snack.",
+                requiredIngredients: ["Whole Wheat Bread", "Avocado", "Tomato"]
+            },
+            {
+                name: "Salmon and Roasted Broccoli",
+                description: "A light and nutritious dinner featuring flavorful salmon and crispy roasted broccoli.",
+                requiredIngredients: ["Salmon Fillet", "Broccoli"]
+            },
+            {
+                name: "Fruit Salad",
+                description: "A refreshing mix of fresh fruits, perfect for a healthy dessert or snack.",
+                requiredIngredients: ["Fresh Apples", "Organic Bananas"]
+            }
+        ];
+
         let cart = [];
         let shoppingList = JSON.parse(localStorage.getItem('shoppingList')) || [];
         let recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
@@ -398,6 +452,10 @@
         const compareModal = document.getElementById('compareModal');
         const closeCompareModal = document.getElementById('closeCompareModal');
         const compareContent = document.getElementById('compareContent');
+        const recipeButton = document.getElementById('recipeButton');
+        const recipeModal = document.getElementById('recipeModal');
+        const closeRecipeModal = document.getElementById('closeRecipeModal');
+        const recipeContent = document.getElementById('recipeContent');
 
         // Function to generate star rating SVG
         function getStars(rating) {
@@ -808,6 +866,45 @@
             }, 300);
         }
 
+        // Render recipes based on cart items
+        function renderRecipes() {
+            recipeContent.innerHTML = '';
+            const cartProductNames = cart.map(item => item.name);
+            const matchingRecipes = recipes.filter(recipe => {
+                const required = recipe.requiredIngredients;
+                return required.every(ingredient => cartProductNames.includes(ingredient));
+            });
+
+            if (matchingRecipes.length === 0) {
+                recipeContent.innerHTML = `<p class="text-center text-gray-500 dark:text-gray-400">Add more items to your cart to find recipe ideas!</p>`;
+            } else {
+                matchingRecipes.forEach(recipe => {
+                    const recipeCard = document.createElement('div');
+                    recipeCard.className = 'bg-gray-100 rounded-lg p-4 shadow-sm dark:bg-gray-700';
+                    recipeCard.innerHTML = `
+                        <h4 class="text-xl font-bold text-gray-800 mb-1 dark:text-gray-200">${recipe.name}</h4>
+                        <p class="text-sm text-gray-600 mb-2 dark:text-gray-400">${recipe.description}</p>
+                        <p class="font-semibold text-gray-700 dark:text-gray-300">You have:</p>
+                        <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
+                            ${recipe.requiredIngredients.map(ing => `<li>${ing}</li>`).join('')}
+                        </ul>
+                    `;
+                    recipeContent.appendChild(recipeCard);
+                });
+            }
+            recipeModal.classList.remove('hidden', 'modal-exit-active');
+            recipeModal.classList.add('modal-enter-active');
+        }
+
+        // Hide recipe modal
+        function hideRecipeModal() {
+            recipeModal.classList.remove('modal-enter-active');
+            recipeModal.classList.add('modal-exit-active');
+            setTimeout(() => {
+                recipeModal.classList.add('hidden');
+            }, 300);
+        }
+
         // Open and close cart modal
         cartButton.addEventListener('click', () => {
             cartModal.classList.remove('hidden', 'modal-exit-active');
@@ -843,6 +940,9 @@
         compareButton.addEventListener('click', renderComparisonModal);
         closeCompareModal.addEventListener('click', hideComparisonModal);
 
+        // Open and close recipe modal
+        recipeButton.addEventListener('click', renderRecipes);
+        closeRecipeModal.addEventListener('click', hideRecipeModal);
 
         // Event listeners for filters and search
         searchInput.addEventListener('input', renderProducts);
