@@ -55,26 +55,26 @@
         }
 
         /* Custom scrollbar for better aesthetics */
-        .cart-items::-webkit-scrollbar, .list-items::-webkit-scrollbar, .recently-viewed::-webkit-scrollbar, .compare-table-container::-webkit-scrollbar, .recipes::-webkit-scrollbar {
+        .cart-items::-webkit-scrollbar, .list-items::-webkit-scrollbar, .recently-viewed::-webkit-scrollbar, .compare-table-container::-webkit-scrollbar, .recipes::-webkit-scrollbar, .deals-grid::-webkit-scrollbar {
             width: 8px;
         }
 
-        .cart-items::-webkit-scrollbar-track, .list-items::-webkit-scrollbar-track, .recently-viewed::-webkit-scrollbar-track, .compare-table-container::-webkit-scrollbar-track, .recipes::-webkit-scrollbar-track {
+        .cart-items::-webkit-scrollbar-track, .list-items::-webkit-scrollbar-track, .recently-viewed::-webkit-scrollbar-track, .compare-table-container::-webkit-scrollbar-track, .recipes::-webkit-scrollbar-track, .deals-grid::-webkit-scrollbar-track {
             background: #e5e7eb;
             border-radius: 10px;
         }
 
-        .dark .cart-items::-webkit-scrollbar-track, .dark .list-items::-webkit-scrollbar-track, .dark .recently-viewed::-webkit-scrollbar-track, .dark .compare-table-container::-webkit-scrollbar-track, .dark .recipes::-webkit-scrollbar-track {
+        .dark .cart-items::-webkit-scrollbar-track, .dark .list-items::-webkit-scrollbar-track, .dark .recently-viewed::-webkit-scrollbar-track, .dark .compare-table-container::-webkit-scrollbar-track, .dark .recipes::-webkit-scrollbar-track, .dark .deals-grid::-webkit-scrollbar-track {
              background: #4a5568;
         }
 
-        .cart-items::-webkit-scrollbar-thumb, .list-items::-webkit-scrollbar-thumb, .recently-viewed::-webkit-scrollbar-thumb, .compare-table-container::-webkit-scrollbar-thumb, .recipes::-webkit-scrollbar-thumb {
+        .cart-items::-webkit-scrollbar-thumb, .list-items::-webkit-scrollbar-thumb, .recently-viewed::-webkit-scrollbar-thumb, .compare-table-container::-webkit-scrollbar-thumb, .recipes::-webkit-scrollbar-thumb, .deals-grid::-webkit-scrollbar-thumb {
             background-color: #9ca3af;
             border-radius: 10px;
             border: 2px solid #e5e7eb;
         }
 
-        .dark .cart-items::-webkit-scrollbar-thumb, .dark .list-items::-webkit-scrollbar-thumb, .dark .recently-viewed::-webkit-scrollbar-thumb, .dark .compare-table-container::-webkit-scrollbar-thumb, .dark .recipes::-webkit-scrollbar-thumb {
+        .dark .cart-items::-webkit-scrollbar-thumb, .dark .list-items::-webkit-scrollbar-thumb, .dark .recently-viewed::-webkit-scrollbar-thumb, .dark .compare-table-container::-webkit-scrollbar-thumb, .dark .recipes::-webkit-scrollbar-thumb, .dark .deals-grid::-webkit-scrollbar-thumb {
             background-color: #718096;
             border: 2px solid #4a5568;
         }
@@ -128,6 +128,17 @@
         .dark .compare-table th, .dark .compare-table td {
             border-bottom-color: #4a5568;
         }
+
+        /* Sale price styling */
+        .sale-price-container {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+        .original-price {
+            text-decoration: line-through;
+            color: #ef4444; /* red-500 */
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -150,7 +161,7 @@
             <!-- Navigation Links -->
             <nav class="hidden md:flex flex-grow justify-center space-x-6 text-lg font-medium">
                 <a href="#products" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Products</a>
-                <a href="#" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Weekly Deals</a>
+                <a href="#weeklyDeals" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Weekly Deals</a>
                 <a href="#about-us" class="text-gray-600 hover:text-green-600 transition-colors duration-300">About Us</a>
                 <a href="#contact" class="text-gray-600 hover:text-green-600 transition-colors duration-300">Contact</a>
             </nav>
@@ -202,6 +213,15 @@
         <h1 class="text-4xl md:text-6xl font-extrabold text-green-800 mb-4 dark:text-green-200">Freshness Delivered to Your Doorstep</h1>
         <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8 dark:text-gray-300">Discover a wide range of fresh produce, quality groceries, and daily essentials, all at your fingertips.</p>
         <button class="bg-green-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-green-700 transition-colors duration-300 transform hover:scale-105">Shop Now</button>
+    </section>
+
+    <!-- Weekly Deals Section -->
+    <section id="weeklyDeals" class="container mx-auto px-4 py-12">
+        <h2 class="text-3xl font-bold text-center mb-6 text-green-700 dark:text-green-300">Weekly Deals!</h2>
+        <p class="text-center text-gray-600 mb-8 dark:text-gray-400">Grab these special offers while they last.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 deals-grid" id="dealsGrid">
+            <!-- Deal Product Cards will be injected here by JavaScript -->
+        </div>
     </section>
 
     <!-- Product Grid Section -->
@@ -395,18 +415,18 @@
     <script>
         // Array of products to display
         const products = [
-            { id: 1, name: "Fresh Apples", price: 2.99, image: "https://placehold.co/400x300/e5f7ed/1b5e20?text=Apples", category: "fruits", description: "Crisp and juicy apples, perfect for snacking or baking.", rating: 4.5, organic: true, vegan: true, glutenFree: true },
+            { id: 1, name: "Fresh Apples", price: 2.99, image: "https://placehold.co/400x300/e5f7ed/1b5e20?text=Apples", category: "fruits", description: "Crisp and juicy apples, perfect for snacking or baking.", rating: 4.5, organic: true, vegan: true, glutenFree: true, onSale: true, salePrice: 2.50 },
             { id: 2, name: "Organic Bananas", price: 1.50, image: "https://placehold.co/400x300/fff3e0/e65100?text=Bananas", category: "fruits", description: "Naturally sweet and potassium-rich, a great source of energy.", rating: 4.0, organic: true, vegan: true, glutenFree: true },
-            { id: 3, name: "Avocado", price: 1.85, image: "https://placehold.co/400x300/e8f5e9/2e7d32?text=Avocado", category: "vegetables", description: "Creamy and delicious, perfect for toast, salads, and more.", rating: 5.0, organic: false, vegan: true, glutenFree: true },
+            { id: 3, name: "Avocado", price: 1.85, image: "https://placehold.co/400x300/e8f5e9/2e7d32?text=Avocado", category: "vegetables", description: "Creamy and delicious, perfect for toast, salads, and more.", rating: 5.0, organic: false, vegan: true, glutenFree: true, onSale: true, salePrice: 1.25 },
             { id: 4, name: "Broccoli", price: 3.20, image: "https://placehold.co/400x300/e1f5fe/01579b?text=Broccoli", category: "vegetables", description: "A nutrient-packed vegetable that's great steamed, roasted, or raw.", rating: 4.5, organic: true, vegan: true, glutenFree: true },
             { id: 5, name: "Milk (1L)", price: 4.50, image: "https://placehold.co/400x300/fafafa/000000?text=Milk", category: "dairy", description: "Fresh, pasteurized milk from local farms.", rating: 4.8, organic: false, vegan: false, glutenFree: true },
             { id: 6, name: "Whole Wheat Bread", price: 3.75, image: "https://placehold.co/400x300/fbe9e7/bf360c?text=Bread", category: "bakery", description: "Hearty and healthy, baked fresh daily.", rating: 3.5, organic: false, vegan: true, glutenFree: false },
-            { id: 7, name: "Cheddar Cheese", price: 5.99, image: "https://placehold.co/400x300/fff8e1/ff6f00?text=Cheese", category: "dairy", description: "Sharp and delicious cheddar, aged for a rich flavor.", rating: 4.2, organic: false, vegan: false, glutenFree: true },
+            { id: 7, name: "Cheddar Cheese", price: 5.99, image: "https://placehold.co/400x300/fff8e1/ff6f00?text=Cheese", category: "dairy", description: "Sharp and delicious cheddar, aged for a rich flavor.", rating: 4.2, organic: false, vegan: false, glutenFree: true, onSale: true, salePrice: 4.99 },
             { id: 8, name: "Tomato", price: 0.75, image: "https://placehold.co/400x300/ffebee/d32f2f?text=Tomato", category: "vegetables", description: "Juicy, ripe tomatoes, perfect for salads and sandwiches.", rating: 4.7, organic: true, vegan: true, glutenFree: true },
             { id: 9, name: "Chicken Breast", price: 8.99, image: "https://placehold.co/400x300/fafafa/000000?text=Chicken", category: "meat", description: "Lean and versatile chicken breast, a kitchen staple.", rating: 4.6, organic: false, vegan: false, glutenFree: true },
             { id: 10, name: "Salmon Fillet", price: 12.50, image: "https://placehold.co/400x300/e3f2fd/1565c0?text=Salmon", category: "seafood", description: "Rich and flavorful salmon fillet, responsibly sourced.", rating: 4.9, organic: false, vegan: false, glutenFree: true },
             { id: 11, name: "Organic Eggs", price: 3.99, image: "https://placehold.co/400x300/fffde7/ffb300?text=Eggs", category: "dairy", description: "Free-range organic eggs, full of flavor.", rating: 4.8, organic: true, vegan: false, glutenFree: true },
-            { id: 12, name: "Pasta", price: 2.10, image: "https://placehold.co/400x300/f3e5f5/6a1b9a?text=Pasta", category: "pantry", description: "Classic spaghetti pasta, a staple for any meal.", rating: 4.1, organic: false, vegan: true, glutenFree: false },
+            { id: 12, name: "Pasta", price: 2.10, image: "https://placehold.co/400x300/f3e5f5/6a1b9a?text=Pasta", category: "pantry", description: "Classic spaghetti pasta, a staple for any meal.", rating: 4.1, organic: false, vegan: true, glutenFree: false, onSale: true, salePrice: 1.75 },
         ];
 
         // Hard-coded recipes with ingredients as product names
@@ -456,6 +476,7 @@
         let comparisonList = [];
 
         const productGrid = document.getElementById('productGrid');
+        const dealsGrid = document.getElementById('dealsGrid');
         const cartCountElement = document.getElementById('cartCount');
         const searchInput = document.getElementById('searchInput');
         const messageBox = document.getElementById('messageBox');
@@ -555,9 +576,9 @@
 
             // 2. Sort
             if (selectedSort === 'price-asc') {
-                filteredProducts.sort((a, b) => a.price - b.price);
+                filteredProducts.sort((a, b) => (a.onSale ? a.salePrice : a.price) - (b.onSale ? b.salePrice : b.price));
             } else if (selectedSort === 'price-desc') {
-                filteredProducts.sort((a, b) => b.price - a.price);
+                filteredProducts.sort((a, b) => (b.onSale ? b.salePrice : b.price) - (a.onSale ? a.salePrice : a.price));
             } else if (selectedSort === 'name-asc') {
                 filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
             } else if (selectedSort === 'name-desc') {
@@ -574,6 +595,10 @@
                 
                 const starsHtml = getStars(product.rating);
                 
+                const priceHtml = product.onSale ? 
+                    `<div class="sale-price-container"><span class="original-price text-gray-400 font-normal">$${product.price.toFixed(2)}</span><span class="text-green-600 font-bold text-lg">$${product.salePrice.toFixed(2)}</span></div>` :
+                    `<p class="text-green-600 font-bold text-lg my-2">$${product.price.toFixed(2)}</p>`;
+
                 productCard.innerHTML = `
                     <div class="absolute top-3 right-3 z-10 flex items-center bg-white dark:bg-gray-800 p-2 rounded-full shadow-md">
                         <label for="compare-${product.id}" class="text-sm font-semibold text-gray-700 dark:text-gray-300 mr-2">Compare</label>
@@ -584,7 +609,7 @@
                         <div class="p-5">
                             <h3 class="text-xl font-semibold text-gray-900 mb-1 dark:text-gray-200">${product.name}</h3>
                             ${starsHtml}
-                            <p class="text-green-600 font-bold text-lg my-2">$${product.price.toFixed(2)}</p>
+                            ${priceHtml}
                         </div>
                     </div>
                     <button onclick="event.stopPropagation(); addToCart(${product.id})" class="w-full bg-green-500 text-white py-2 px-4 rounded-b-lg font-semibold hover:bg-green-600 transition-colors duration-300">
@@ -594,6 +619,46 @@
                 productGrid.appendChild(productCard);
             });
         }
+
+        // Function to render the weekly deals section
+        function renderWeeklyDeals() {
+            dealsGrid.innerHTML = '';
+            const deals = products.filter(product => product.onSale);
+
+            if (deals.length === 0) {
+                dealsGrid.innerHTML = `<p class="text-center text-gray-500 dark:text-gray-400 col-span-full">Check back soon for new deals!</p>`;
+                return;
+            }
+
+            deals.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl dark:bg-gray-700 relative';
+
+                const starsHtml = getStars(product.rating);
+
+                const priceHtml = `<div class="sale-price-container"><span class="original-price text-gray-400 font-normal">$${product.price.toFixed(2)}</span><span class="text-green-600 font-bold text-lg">$${product.salePrice.toFixed(2)}</span></div>`;
+
+                productCard.innerHTML = `
+                    <div class="absolute top-3 right-3 z-10 flex items-center bg-white dark:bg-gray-800 p-2 rounded-full shadow-md">
+                        <label for="compare-${product.id}-deal" class="text-sm font-semibold text-gray-700 dark:text-gray-300 mr-2">Compare</label>
+                        <input type="checkbox" id="compare-${product.id}-deal" onchange="toggleCompare(${product.id})" ${comparisonList.includes(product.id) ? 'checked' : ''} class="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500">
+                    </div>
+                    <div onclick="showQuickView(${product.id})" class="cursor-pointer">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover object-center">
+                        <div class="p-5">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-1 dark:text-gray-200">${product.name}</h3>
+                            ${starsHtml}
+                            ${priceHtml}
+                        </div>
+                    </div>
+                    <button onclick="event.stopPropagation(); addToCart(${product.id})" class="w-full bg-green-500 text-white py-2 px-4 rounded-b-lg font-semibold hover:bg-green-600 transition-colors duration-300">
+                        Add to Cart
+                    </button>
+                `;
+                dealsGrid.appendChild(productCard);
+            });
+        }
+
 
         // Function to show a message (replaces alert())
         function showMessage(text) {
@@ -614,10 +679,11 @@
             const productToAdd = products.find(p => p.id === productId);
             if (productToAdd) {
                 const existingItem = cart.find(item => item.id === productId);
+                const price = productToAdd.onSale ? productToAdd.salePrice : productToAdd.price;
                 if (existingItem) {
                     existingItem.quantity++;
                 } else {
-                    cart.push({ ...productToAdd, quantity: 1 });
+                    cart.push({ ...productToAdd, quantity: 1, price: price });
                 }
                 updateCartUI();
                 showMessage(`Added ${productToAdd.name} to your cart!`);
@@ -663,7 +729,7 @@
                 checkoutButtonInCart.disabled = false;
                 cart.forEach(item => {
                     totalCount += item.quantity;
-                    total += item.price * item.quantity;
+                    total += (item.onSale ? item.salePrice : item.price) * item.quantity;
                     const cartItemEl = document.createElement('div');
                     cartItemEl.className = 'flex items-center justify-between p-3 bg-gray-100 rounded-lg dark:bg-gray-700';
                     cartItemEl.innerHTML = `
@@ -671,10 +737,10 @@
                             <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-md object-cover">
                             <div>
                                 <h4 class="font-semibold dark:text-gray-200">${item.name}</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">$${item.price.toFixed(2)} x ${item.quantity}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">$${(item.onSale ? item.salePrice : item.price).toFixed(2)} x ${item.quantity}</p>
                             </div>
                         </div>
-                        <span class="font-bold text-green-600">$${(item.price * item.quantity).toFixed(2)}</span>
+                        <span class="font-bold text-green-600">$${((item.onSale ? item.salePrice : item.price) * item.quantity).toFixed(2)}</span>
                     `;
                     cartItemsContainer.appendChild(cartItemEl);
                 });
@@ -763,11 +829,12 @@
                     const productCard = document.createElement('div');
                     productCard.className = 'flex-shrink-0 w-48 bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl dark:bg-gray-700 cursor-pointer';
                     productCard.onclick = () => showQuickView(product.id);
+                    const priceToDisplay = product.onSale ? product.salePrice : product.price;
                     productCard.innerHTML = `
                         <img src="${product.image}" alt="${product.name}" class="w-full h-32 object-cover object-center">
                         <div class="p-3 text-center">
                             <h4 class="text-md font-semibold text-gray-900 truncate dark:text-gray-200">${product.name}</h4>
-                            <p class="text-green-600 font-bold text-sm mt-1">$${product.price.toFixed(2)}</p>
+                            <p class="text-green-600 font-bold text-sm mt-1">$${priceToDisplay.toFixed(2)}</p>
                         </div>
                     `;
                     recentlyViewedContainer.appendChild(productCard);
@@ -800,6 +867,11 @@
             const product = products.find(p => p.id === productId);
             if (product) {
                 const starsHtml = getStars(product.rating);
+                
+                const priceHtml = product.onSale ?
+                    `<div class="flex items-baseline mb-4"><span class="original-price text-gray-400 text-xl font-normal mr-2">$${product.price.toFixed(2)}</span><span class="text-green-600 font-bold text-3xl">$${product.salePrice.toFixed(2)}</span></div>` :
+                    `<p class="text-3xl font-bold text-green-600 mb-4">$${product.price.toFixed(2)}</p>`;
+                
                 quickViewContent.innerHTML = `
                     <div class="flex justify-between items-center border-b pb-3 mb-4 border-gray-200 dark:border-gray-700">
                         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">${product.name}</h3>
@@ -820,7 +892,7 @@
                                     ${starsHtml}
                                     <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">(${product.rating} / 5)</span>
                                 </div>
-                                <p class="text-3xl font-bold text-green-600 mb-4">$${product.price.toFixed(2)}</p>
+                                ${priceHtml}
                             </div>
                             <button onclick="addToCart(${product.id}); hideQuickView()" class="w-full bg-green-500 text-white font-semibold py-3 px-4 rounded-full hover:bg-green-600 transition-colors duration-300">
                                 Add to Cart
@@ -855,6 +927,7 @@
             }
             updateCompareButtonState();
             renderProducts(); // Rerender to update the checkbox state
+            renderWeeklyDeals(); // Rerender deals to update checkboxes there too
         }
 
         // Update the state of the compare button
@@ -909,6 +982,7 @@
             // Insert product data into the table
             productsToCompare.forEach(product => {
                 const starsHtml = getStars(product.rating);
+                 const priceToDisplay = product.onSale ? `<span class="original-price text-gray-400 font-normal mr-2">$${product.price.toFixed(2)}</span><span class="text-green-600 font-bold">$${product.salePrice.toFixed(2)}</span>` : `$${product.price.toFixed(2)}`;
                 tableHtml = tableHtml.replace('</thead>', `
                     <th class="text-center font-bold text-gray-800 dark:text-gray-200">${product.name}</th>
                     </thead>
@@ -919,7 +993,7 @@
                     <td class="text-center font-semibold text-gray-900 dark:text-gray-200">${product.name}</td>
                     <!-- Names Row -->
                 `).replace('<!-- Prices Row -->', `
-                    <td class="text-center font-bold text-green-600">$${product.price.toFixed(2)}</td>
+                    <td class="text-center font-bold text-green-600">${priceToDisplay}</td>
                     <!-- Prices Row -->
                 `).replace('<!-- Ratings Row -->', `
                     <td class="text-center">
@@ -1052,6 +1126,7 @@
         // Initial rendering
         document.addEventListener('DOMContentLoaded', () => {
             renderProducts();
+            renderWeeklyDeals();
             updateCartUI();
             renderRecentlyViewed();
             setInterval(rotateTrivia, 5000); // Rotate trivia fact every 5 seconds
